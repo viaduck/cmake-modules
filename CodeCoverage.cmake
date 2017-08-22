@@ -36,6 +36,9 @@
 # -- Displaying a colour legend
 # -- Branch coverage
 #
+# 2017-02-04
+# - Bug fixes for exclusion path handling
+#
 # 2016-01-24
 # - Added additional optional parameter for specifying exclusion paths of coverage target
 #
@@ -123,7 +126,7 @@ MARK_AS_ADVANCED(
         CMAKE_SHARED_LINKER_FLAGS_COVERAGE )
 
 IF ( NOT (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Coverage"))
-    MESSAGE( WARNING "Code coverage results with an optimized (non-Debug) build may be misleading" )
+    #MESSAGE( WARNING "Code coverage results with an optimized (non-Debug) build may be misleading" )
 ENDIF() # NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
 
 
@@ -135,6 +138,9 @@ ENDIF() # NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
 #                       HTML report is generated in _outputname/index.html
 # Optional fourth parameter: Paths to exclude from coverage report (in list form)
 # Optional fifth parameter is passed as arguments to _testrunner
+#   Pass them in list form, e.g.: "-j;2" for -j 2
+# Optional sixth parameter: 2nd test runner
+# Optional seventh parameter is passed as arguments to 2nd test runner
 #   Pass them in list form, e.g.: "-j;2" for -j 2
 FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 
@@ -159,10 +165,12 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
             # Run tests
             COMMAND ${_testrunner} ${ARGV4}
 
+            COMMAND ${ARGV5} ${ARGV6}
+
             # Capturing lcov counters and generating report
             COMMAND ${LCOV_PATH} --rc lcov_branch_coverage=1 --directory . --capture --output-file ${_outputname}.info
-            COMMAND ${LCOV_PATH} --rc lcov_branch_coverage=1 --remove ${_outputname}.info ${ARGV3} 'test/*' '/usr/*' 'external/' --output-file ${_outputname}.info.cleaned
-            COMMAND ${GENHTML_PATH} -t ${GIT_SHA1} --legend --branch-coverage -o ${_outputname} ${_outputname}.info.cleaned
+            COMMAND ${LCOV_PATH} --rc lcov_branch_coverage=1 --remove ${_outputname}.info ${ARGV3} '/usr/*' --output-file ${_outputname}.info.cleaned
+            COMMAND ${GENHTML_PATH} -t ${GIT_SHA1} --legend --branch-coverage --demangle-cpp -o ${_outputname} ${_outputname}.info.cleaned
             COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info ${_outputname}.info.cleaned
 
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
