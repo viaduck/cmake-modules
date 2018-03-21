@@ -1,4 +1,5 @@
 # Copyright (c) 2012 - 2015, Lars Bilke
+# Copyright (c) 2016-2018, The ViaDuck Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
@@ -26,24 +27,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-#
-# 2016-03-05
-# - Having gcov installed is not mandatory anymore when including this module
-#
-# 2016-03-04
-# - Made coverage html report more informative and fancy:
-# -- Git revision as test title
-# -- Displaying a colour legend
-# -- Branch coverage
-#
-# 2017-02-04
-# - Bug fixes for exclusion path handling
-#
-# 2016-01-24
-# - Added additional optional parameter for specifying exclusion paths of coverage target
-#
-# 2015-12-23
-# - Changed exclusion dirs of coverage target
+# CHANGES:
 #
 # 2012-01-31, Lars Bilke
 # - Enable Code Coverage
@@ -51,6 +35,25 @@
 # 2013-09-17, Joakim Söderberg
 # - Added support for Clang.
 # - Some additional usage instructions.
+#
+# 2015-12-23, The ViaDuck Project
+# - Changed exclusion dirs of coverage target
+#
+# 2016-01-24, The ViaDuck Project
+# - Added additional optional parameter for specifying exclusion paths of coverage target
+#
+# 2016-03-04, The ViaDuck Project
+# - Made coverage html report more informative and fancy:
+# -- Git revision as test title
+# -- Displaying a colour legend
+# -- Branch coverage
+#
+# 2016-03-05, The ViaDuck Project
+# - Having gcov installed is not mandatory anymore when including this module
+#
+# 2017-02-04, The ViaDuck Project
+# - Bug fixes for exclusion path handling
+#
 #
 # USAGE:
 
@@ -126,7 +129,7 @@ MARK_AS_ADVANCED(
         CMAKE_SHARED_LINKER_FLAGS_COVERAGE )
 
 IF ( NOT (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Coverage"))
-    #MESSAGE( WARNING "Code coverage results with an optimized (non-Debug) build may be misleading" )
+    MESSAGE( WARNING "Code coverage results with an optimized (non-Debug) build may be misleading" )
 ENDIF() # NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
 
 
