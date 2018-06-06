@@ -57,6 +57,8 @@
 # 2018-04-11, The ViaDuck Project
 # - Only generate coverage in debug mode
 #
+# 2018-06-06, Rayer
+# - Make this module compatible with most recent macOS provided Clang(AppleClang)
 #
 # USAGE:
 
