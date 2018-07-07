@@ -34,10 +34,13 @@ find_path(MariaDBClient_INCLUDE_DIR
         )
 
 # library
+set(BAK_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_SHARED_LIBRARY_SUFFIX})
 find_library(MariaDBClient_LIBRARY
         NAMES mariadbclient mysqlclient
         PATH_SUFFIXES mariadb mysql
         )
+set(CMAKE_FIND_LIBRARY_SUFFIXES ${BAK_CMAKE_FIND_LIBRARY_SUFFIXES})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(MariaDBClient DEFAULT_MSG MariaDBClient_LIBRARY MariaDBClient_INCLUDE_DIR)
