@@ -26,25 +26,28 @@ if (NOT PATCH_PROGRAM)
     message(FATAL_ERROR "Cannot find patch utility")
 endif()
 
-macro(ApplyPatches name patch_glob target_dir)
-    if (NOT ${name}_patched)
-        # find all patch files
-        file(GLOB PATCH_FILES ${patch_glob})
+macro(ApplyPatches patch_glob target_dir)
+    # find all patch files
+    file(GLOB PATCH_FILES ${patch_glob})
 
-        # apply each patch subsequently
-        foreach(PATCH_FILE ${PATCH_FILES})
-            # try to apply the patch
-            execute_process(
+    # apply each patch subsequently
+    foreach(PATCH_FILE ${PATCH_FILES})
+        # try to apply the patch
+        execute_process(
                 COMMAND ${PATCH_PROGRAM} -p1 -i ${PATCH_FILE}
                 RESULT_VARIABLE PATCH_RESULT
                 WORKING_DIRECTORY ${target_dir}
-            )
+        )
 
-            if (NOT ${PATCH_RESULT} EQUAL "0")
-                message(FATAL_ERROR "Failed to apply patch: ${PATCH_FILE}")
-            endif()
-        endforeach()
+        if (NOT ${PATCH_RESULT} EQUAL "0")
+            message(FATAL_ERROR "Failed to apply patch: ${PATCH_FILE}")
+        endif()
+    endforeach()
+endmacro()
 
+macro(ApplyPatchesOnce name patch_glob target_dir)
+    if (NOT ${name}_patched)
+        ApplyPatches(${patch_glob} ${target_dir})
         set(${name}_patched TRUE CACHE BOOL "Indicates whether the patches were already applied" FORCE)
     endif()
 endmacro()
