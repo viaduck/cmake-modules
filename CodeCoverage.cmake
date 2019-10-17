@@ -1,5 +1,5 @@
 # Copyright (c) 2012 - 2015, Lars Bilke
-# Copyright (c) 2016-2018, The ViaDuck Project
+# Copyright (c) 2016-2019, The ViaDuck Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
@@ -103,9 +103,6 @@ include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 
 IF(NOT CMAKE_COMPILER_IS_GNUCXX)
-    # Clang version 3.0.0 and greater now supports gcov as well.
-    MESSAGE(WARNING "Compiler is not GNU gcc! Clang Version 3.0.0 and greater supports gcov as well, but older versions don't.")
-
     IF(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
         MESSAGE(FATAL_ERROR "Compiler is not GNU gcc! Aborting...")
     ENDIF()
