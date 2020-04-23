@@ -24,6 +24,5 @@
 function(FixRPath target_name)
     set_target_properties(${target_name} PROPERTIES
         INSTALL_RPATH_USE_LINK_PATH FALSE
-        INSTALL_RPATH "\$ORIGIN"
-        BUILD_WITH_INSTALL_RPATH TRUE)
+        INSTALL_RPATH "\$ORIGIN")
 endfunction()
