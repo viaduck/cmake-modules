@@ -37,7 +37,7 @@ find_path(MariaDBClient_INCLUDE_DIR
 set(BAK_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
 set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_SHARED_LIBRARY_SUFFIX})
 find_library(MariaDBClient_LIBRARY
-        NAMES mariadb mariadbclient mysqlclient
+        NAMES mariadb libmariadb mariadbclient libmariadbclient mysqlclient libmysqlclient
         PATH_SUFFIXES mariadb mysql
         )
 set(CMAKE_FIND_LIBRARY_SUFFIXES ${BAK_CMAKE_FIND_LIBRARY_SUFFIXES})
