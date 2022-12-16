@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "win-clang-cl",
+      "displayName": "ClangCL on Windows with some verbose warnings disabled",
+      "toolset": {
+        "value": "ClangCL"
+      },
+      "cacheVariables": {
+        "gtest_force_shared_crt": "ON"
+      },
+      "environment": {
+        "CXXFLAGS": "-Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-documentation"
+      }
+    }
+  ]
+}
