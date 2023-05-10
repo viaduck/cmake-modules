@@ -208,6 +208,14 @@ endif() # NOT (CMAKE_BUILD_TYPE STREQUAL "Debug" OR GENERATOR_IS_MULTI_CONFIG)
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     link_libraries(gcov)
+elseif(${CMAKE_C_COMPILER_ID} MATCHES "(Apple)?[Cc]lang")
+    # lcov does not allow to pass "llvm-cov gcov" as gcov executable. To overcome this limitation,
+    # create a symlink so that the executable basename is gcov. When llvm-cov is invoked with "gcov" basename, it will
+    # emulate gcov.
+    find_program(LLVM_COV_PATH llvm-cov REQUIRED)
+    file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/gcov")
+    file(CREATE_LINK "${LLVM_COV_PATH}" "${CMAKE_CURRENT_BINARY_DIR}/gcov" SYMBOLIC)
+    set(GCOV_PATH "${CMAKE_CURRENT_BINARY_DIR}/gcov")
 endif()
 
 # Defines a target for running and collection code coverage information
