@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2017-2018 The ViaDuck Project
+# Copyright (c) 2017-2023 The ViaDuck Project
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,25 @@
 set(GTEST_SRC_DIR "" CACHE PATH "Path to GTest source")
 
 if (GTEST_SRC_DIR)
-    message(STATUS "Path to GTest source specified; adding to project")
-
-    # add subdirectory so that gtest is built automatically
     if (NOT TARGET gtest)
+        message(STATUS "Path to GTest source specified; adding to project")
+
+        # add subdirectory so that gtest is built automatically
         add_subdirectory(${GTEST_SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR}/gtest)
     endif()
+
     set(GTEST_FOUND TRUE)
-    set(GTEST_BOTH_LIBRARIES gtest gtest_main)
+    set(GTEST_TARGET gtest_main)
 else()
     if (NOT GTEST_FOUND)
-        message(STATUS "No path to GTest source specified. Trying to find GTest.")
-
         find_package(GTest)
 
         if (GTEST_FOUND)
-            message(STATUS "Found GTest.")
+            message(STATUS "Found system GTest")
+        else()
+            message(STATUS "System GTest not found; disabling tests")
         endif()
     endif()
+
+    set(GTEST_TARGET GTest::Main GTest::gtest_main)
 endif()
