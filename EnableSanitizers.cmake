@@ -50,6 +50,8 @@ if (VIADUCK_SANITIZERS AND CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?[Cc]lang" AND 
     endmacro()
 
     function(enable_sanitizers_for_target name)
+        message(STATUS "Enabled sanitizers for ${name}")
+
         # ~no slowdown
         make_viaduck_san_target(${name} asan
             COMPILE_FLAGS -fsanitize=address,leak,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,nullability

@@ -22,8 +22,7 @@
 #
 
 set(VIADUCK_COVERAGE OFF CACHE BOOL "Enable generation of coverage targets")
-# changing the coverage type will require deleting all existing coverage files and recompiling the project
-set(VIADUCK_COVERAGE_TYPE "lcov" CACHE STRING "Select the tool and mode used to generate coverage reports")
+set(VIADUCK_COVERAGE_TYPE "lcov" CACHE STRING "Select the tool and mode used to generate coverage reports. Changing this type requires deleting all existing coverage files and recompiling the project")
 set_property(CACHE VIADUCK_COVERAGE_TYPE PROPERTY STRINGS "lcov" "gcovr_xml" "gcovr_html" "fastcov")
 
 if (VIADUCK_COVERAGE AND NOT WIN32 AND NOT ANDROID)
@@ -38,6 +37,8 @@ if (VIADUCK_COVERAGE AND NOT WIN32 AND NOT ANDROID)
     # basedir: base directory of the target, this is where the exclusion paths will be relative to
     # argn: every other argument is an exclusion path
     function(enable_coverage_for_target name basedir)
+        message(STATUS "Enabled coverage for ${name}")
+
         # include generated file for dynamic call based on coverage type
         # beware of issues with forwarding ARGV when positional arguments are lists
         set(temp_file "${CMAKE_CURRENT_BINARY_DIR}/temp_file.cmake")
