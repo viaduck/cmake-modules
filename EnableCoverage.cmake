@@ -29,6 +29,12 @@ if (VIADUCK_COVERAGE AND NOT WIN32 AND NOT ANDROID)
     # only include if we are generating coverage to avoid requiring coverage tools unnecessarily
     include(CodeCoverage)
 
+    # dynamic call based on coverage type
+    # beware of issues with forwarding ARGV when positional arguments are lists
+    function(setup_target_for_coverage_dynamic)
+        cmake_language(CALL "setup_target_for_coverage_${VIADUCK_COVERAGE_TYPE}" ${ARGV})
+    endfunction()
+
     # setup specified target with suitable values for viaduck projects
     # assuming that the ${name} target has been created in the current scope and can be edited (for compiler flags)
     # and that it can be run without arguments
@@ -38,14 +44,6 @@ if (VIADUCK_COVERAGE AND NOT WIN32 AND NOT ANDROID)
     # argn: every other argument is an exclusion path
     function(enable_coverage_for_target name basedir)
         message(STATUS "Enabled coverage for ${name}")
-
-        # include generated file for dynamic call based on coverage type
-        # beware of issues with forwarding ARGV when positional arguments are lists
-        set(temp_file "${CMAKE_CURRENT_BINARY_DIR}/temp_file.cmake")
-        file(WRITE  "${temp_file}" "function(setup_target_for_coverage_dynamic)\n")
-        file(APPEND "${temp_file}" "    setup_target_for_coverage_${VIADUCK_COVERAGE_TYPE}(\${ARGV})\n")
-        file(APPEND "${temp_file}" "endfunction()")
-        include("${temp_file}")
 
         # include git revision module
         include(GetGitRevisionDescription)
