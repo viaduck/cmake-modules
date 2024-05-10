@@ -155,18 +155,23 @@ endif() # NOT GCOV_PATH
 get_property(LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
 foreach(LANG ${LANGUAGES})
   if("${CMAKE_${LANG}_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
+    set(COMPILER_IS_CLANG ON)
+
     if("${CMAKE_${LANG}_COMPILER_VERSION}" VERSION_LESS 3)
       message(FATAL_ERROR "Clang version must be 3.0.0 or greater! Aborting...")
     endif()
-  elseif(NOT "${CMAKE_${LANG}_COMPILER_ID}" MATCHES "GNU"
-         AND NOT "${CMAKE_${LANG}_COMPILER_ID}" MATCHES "(LLVM)?[Ff]lang")
-    message(FATAL_ERROR "Compiler is not GNU or Flang! Aborting...")
+  elseif("${CMAKE_${LANG}_COMPILER_ID}" MATCHES "GNU")
+    set(COMPILER_IS_GNU ON)
+  elseif("${CMAKE_${LANG}_COMPILER_ID}" MATCHES "(LLVM)?[Ff]lang")
+    set(COMPILER_IS_FLANG ON)
+  elseif(${CMAKE_${LANG}_COMPILER_ENABLED})
+    message(FATAL_ERROR "Compiler is not Clang, GNU or Flang! Aborting...")
   endif()
 endforeach()
 
 set(COVERAGE_COMPILER_FLAGS "-g --coverage"
     CACHE INTERNAL "")
-if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
+if(CMAKE_CXX_COMPILER_ENABLED AND (COMPILER_IS_CLANG OR COMPILER_IS_GNU))
     include(CheckCXXCompilerFlag)
     check_cxx_compiler_flag(-fprofile-abs-path HAVE_fprofile_abs_path)
     if(HAVE_fprofile_abs_path)
@@ -206,9 +211,9 @@ if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug" OR GENERATOR_IS_MULTI_CONFIG))
     message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
 endif() # NOT (CMAKE_BUILD_TYPE STREQUAL "Debug" OR GENERATOR_IS_MULTI_CONFIG)
 
-if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+if(COMPILER_IS_GNU)
     link_libraries(gcov)
-elseif(${CMAKE_C_COMPILER_ID} MATCHES "(Apple)?[Cc]lang")
+elseif(COMPILER_IS_CLANG)
     # lcov does not allow to pass "llvm-cov gcov" as gcov executable. To overcome this limitation,
     # create a symlink so that the executable basename is gcov. When llvm-cov is invoked with "gcov" basename, it will
     # emulate gcov.
@@ -745,7 +750,7 @@ function(append_coverage_compiler_flags_to_target name)
     separate_arguments(_flag_list NATIVE_COMMAND "${COVERAGE_COMPILER_FLAGS}")
     target_compile_options(${name} PRIVATE ${_flag_list})
     target_link_options(${name} PRIVATE ${_flag_list})
-    if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+    if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
         target_link_libraries(${name} PRIVATE gcov)
     endif()
 endfunction()
