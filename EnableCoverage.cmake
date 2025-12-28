@@ -22,7 +22,7 @@
 #
 
 set(VIADUCK_COVERAGE OFF CACHE BOOL "Enable generation of coverage targets")
-set(VIADUCK_COVERAGE_TYPE "lcov" CACHE STRING "Select the tool and mode used to generate coverage reports. Changing this type requires deleting all existing coverage files and recompiling the project")
+set(VIADUCK_COVERAGE_TYPE "gcovr_html" CACHE STRING "Select the tool and mode used to generate coverage reports. Changing this type requires deleting all existing coverage files and recompiling the project")
 set_property(CACHE VIADUCK_COVERAGE_TYPE PROPERTY STRINGS "lcov" "gcovr_xml" "gcovr_html" "fastcov")
 
 if (VIADUCK_COVERAGE AND NOT WIN32 AND NOT ANDROID)
@@ -51,7 +51,7 @@ if (VIADUCK_COVERAGE AND NOT WIN32 AND NOT ANDROID)
 
         # per-type-arguments
         set(COVERAGE_ARGS_lcov
-            LCOV_ARGS --rc lcov_branch_coverage=1
+            LCOV_ARGS --branch-coverage
             GENHTML_ARGS -t ${GIT_SHA1} --legend --branch-coverage)
 
         # add compiler and linker flags to target
